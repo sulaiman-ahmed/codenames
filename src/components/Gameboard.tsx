@@ -4,9 +4,9 @@ import Card from './Card';
 const cardTypes = [
   'red', 'red', 'red', 'red', 'red',
   'blue', 'blue', 'blue', 'blue', 'blue',
-  'neutral', 'neutral', 'neutral', 'neutral', 'neutral',
-  'neutral', 'neutral', 'neutral', 'neutral', 'neutral',
-  'assassin'
+  'neutral', 'neutral', 'neutral', 'red', 'red',
+  'neutral', 'neutral', 'neutral', 'neutral', 'blue',
+  'assassin', 'red', 'red', 'blue', 'blue'
 ];
 
 const shuffleArray = (array: any[]) => {
@@ -17,23 +17,35 @@ const shuffleArray = (array: any[]) => {
   return array;
 };
 
-const GameBoard: React.FC = () => {
+interface GameBoardProps {
+  user: {
+    name: string;
+    team: 'red' | 'blue';
+    role: 'CodeMaster' | 'CodeGuesser';
+  };
+}
+
+const GameBoard: React.FC<GameBoardProps> = ({ user }) => {
   const [cards, setCards] = useState<{ word: string; type: string }[]>([]);
 
   useEffect(() => {
     const fetchWords = async () => {
-      const response = await fetch('wordlist.txt');
-      const text = await response.text();
-      const words = text.split('\n').map(word => word.trim()).filter(word => word);
-      const shuffledWords = shuffleArray(words).slice(0, 25);
-      const shuffledTypes = shuffleArray([...cardTypes]);
+      try {
+        const response = await fetch('/wordlist.txt');
+        const text = await response.text();
+        const words = text.split('\n').map(word => word.trim()).filter(word => word);
+        const shuffledWords = shuffleArray(words).slice(0, 25);
+        const shuffledTypes = shuffleArray([...cardTypes]);
 
-      setCards(
-        shuffledWords.map((word, index) => ({
-          word,
-          type: shuffledTypes[index],
-        }))
-      );
+        setCards(
+          shuffledWords.map((word, index) => ({
+            word,
+            type: shuffledTypes[index],
+          }))
+        );
+      } catch (error) {
+        console.error('Error fetching the word list:', error);
+      }
     };
 
     fetchWords();
@@ -49,7 +61,7 @@ const GameBoard: React.FC = () => {
         <Card
           key={index}
           word={card.word}
-          type={card.type}
+          type={user.role === 'CodeMaster' ? card.type : 'pale'}
           onClick={() => handleCardClick(index)}
         />
       ))}

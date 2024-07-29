@@ -17,6 +17,8 @@ const Card: React.FC<CardProps> = ({ word, type, onClick }) => {
         return 'lightgray';
       case 'assassin':
         return 'black';
+      case 'pale':
+        return 'lightyellow';
       default:
         return 'white';
     }
@@ -30,15 +32,16 @@ const Card: React.FC<CardProps> = ({ word, type, onClick }) => {
         color: type === 'assassin' ? 'white' : 'black',
         border: '1px solid black',
         borderRadius: '5px',
-        padding: '10px',
-        margin: '5px',
+        padding: '5px',
+        margin: '2px',
         textAlign: 'center',
-        width: '100px',
-        height: '100px',
+        width: '70px',
+        height: '70px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         cursor: 'pointer',
+        fontSize: '0.8rem',
       }}
     >
       {word}
